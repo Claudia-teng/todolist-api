@@ -68,6 +68,25 @@ const requestLisener = (req, res) => {
     } else {
       errorHandle(res);
     }
+  } else if (req.url.startsWith("/todos/") && req.method === 'PATCH') {
+    req.on('end', () => {
+      try {
+        const title = JSON.parse(body).title;
+        const id = req.url.split("/").pop();
+        const index = todos.findIndex(element => element.id === id);
+        if (title !== undefined && index !== -1) {
+          todos[index].title = title;
+          res.writeHead(200, headers);
+          res.write(JSON.stringify({
+            "status": "sucess",
+            "data": todos,
+          }));
+          res.end();
+        }
+      } catch (err) {
+        errorHandle(res);
+      }
+    })
   } else if (req.method === 'OPTIONS') {
     res.writeHead(200, headers);
     res.end();
@@ -79,7 +98,6 @@ const requestLisener = (req, res) => {
     }));
     res.end();
   }
-  
 }
 
 const server = http.createServer(requestLisener)
