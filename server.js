@@ -1,6 +1,6 @@
 const http = require('http');
 const { v4: uuid } = require('uuid');
-
+const errorHandle = require('./errorHandle');
 const todos = [];
 
 const requestLisener = (req, res) => {
@@ -40,21 +40,10 @@ const requestLisener = (req, res) => {
           }));
           res.end();
         } else {
-          res.writeHead(400, headers);
-          res.write(JSON.stringify({
-            "status": "failed",
-            "message": "wrong data type, or todo id not found!"
-          }));
-          res.end();
+          errorHandle(res);
         }
       } catch(err) {
-        console.log('err', err);
-        res.writeHead(400, headers);
-        res.write(JSON.stringify({
-          "status": "failed",
-          "message": "wrong data type, or todo id not found!"
-        }));
-        res.end();
+        errorHandle(res);
       }
     })
   } else if (req.method === 'OPTIONS') {
