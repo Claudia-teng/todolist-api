@@ -1,16 +1,10 @@
 const http = require('http');
 const { v4: uuid } = require('uuid');
 const errorHandle = require('./errorHandle');
+const headers = require('./header');
 const todos = [];
 
 const requestLisener = (req, res) => {
-  const headers = {
-    'Access-Control-Allow-Headers': 'Content-Type, Authorization, Content-Length, X-Requested-With',
-    'Access-Control-Allow-Origin': '*',
-    'Access-Control-Allow-Methods': 'PATCH, POST, GET, OPTIONS, DELETE',
-    'Content-Type': 'application/json'
-  }
-
   let body = "";
   req.on('data', (chunk) => {
     body += chunk;
@@ -82,6 +76,8 @@ const requestLisener = (req, res) => {
             "data": todos,
           }));
           res.end();
+        } else {
+          errorHandle(res);
         }
       } catch (err) {
         errorHandle(res);
